@@ -15,8 +15,7 @@
  *  translated coordinate pair in the form [x, y]
  */
 export function translate2d(dx, dy) {
-  const repeater = (x, y) => [x + dx, y + dy];
-  return repeater;
+  return (x, y) => [dx + x, dy + y];
 }
 
 /**
@@ -30,8 +29,7 @@ export function translate2d(dx, dy) {
  *  scaled coordinate pair in the form [x, y]
  */
 export function scale2d(sx, sy) {
-  const scaler = (x, y) => [x * sx, y * sy];
-  return scaler;
+  return (x, y) => [sx * x, sy * y];
 }
 
 /**
@@ -45,7 +43,10 @@ export function scale2d(sx, sy) {
  *  transformed coordinate pair in the form [x, y]
  */
 export function composeTransform(f, g) {
-  throw new Error("Implement the composeTransform function");
+  return (x, y) => {
+    const fOutput = f(x, y);
+    return g(fOutput[0], fOutput[1]);
+  };
 }
 
 /**
@@ -57,6 +58,15 @@ export function composeTransform(f, g) {
  * @returns {function} a function which takes x and y arguments, and will either return the saved result
  *  if the arguments are the same on subsequent calls, or compute a new result if they are different.
  */
+
 export function memoizeTransform(f) {
-  throw new Error("Implement the memoizeTransform function");
+  let savedX, savedY, savedResult;
+  return (x, y) => {
+    if (x !== savedX || y !== savedY) {
+      savedX = x;
+      savedY = y;
+      savedResult = f(x, y);
+    }
+    return savedResult;
+  };
 }
